@@ -28,7 +28,7 @@ wire IorD, MemWrite, IRWrite, PCWrite;
 wire BranchEq, PCSrc, ALUSrcA, RegWrite;
 wire MemtoReg, RegDst, BranchNeq;
 wire [1:0] ALUSrcB;
-wire [3:0] ALUControl;
+wire [2:0] ALUControl;
 
 
 /***********        Wires for Registers and Multiplexers              ***********/

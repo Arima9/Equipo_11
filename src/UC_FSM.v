@@ -40,7 +40,7 @@ always @(*) begin
     case (STATE)
         IF:begin    //State for Intruction Fetch
             NEXT = ID;
-            Ctrl_signals = 'h8810;
+            Ctrl_signals = 'h8410;
         end //End of Instruction fetch state
         ID:begin    //State for Instruction Decode
             NEXT = EX;
