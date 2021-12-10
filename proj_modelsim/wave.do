@@ -2,6 +2,7 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /MIPS_UC_tb/CLK
 add wave -noupdate /MIPS_UC_tb/RST
+add wave -noupdate /MIPS_UC_tb/UC_STATE
 add wave -noupdate -radix hexadecimal /MIPS_UC_tb/GPIO_o_tb
 add wave -noupdate -radix hexadecimal /MIPS_UC_tb/DUT/PC_reg
 add wave -noupdate -radix hexadecimal /MIPS_UC_tb/DUT/AdrSM_mux
@@ -25,7 +26,7 @@ add wave -noupdate -expand -group ControlSignals /MIPS_UC_tb/DUT/MemtoReg
 add wave -noupdate -expand -group ControlSignals /MIPS_UC_tb/DUT/RegDst
 add wave -noupdate -expand -group ControlSignals /MIPS_UC_tb/DUT/BranchNeq
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {4 ns} 0}
+WaveRestoreCursors {{Cursor 1} {12 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -41,4 +42,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {64 ns}
+WaveRestoreZoom {0 ns} {100 ns}
