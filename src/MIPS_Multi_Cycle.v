@@ -26,14 +26,14 @@ wire    [BUS-1:0]  SignImm; //SignExtender wire
 /***********        Wires declaration for the control signals     ***********/
 wire IorD, MemWrite, IRWrite, PCWrite;
 wire BranchEq, PCSrc, ALUSrcA, RegWrite;
-wire MemtoReg, RegDst, BranchNeq;
+wire MemtoReg, RegDst, BranchNeq, Jen, SignZero;
 wire [1:0] ALUSrcB;
 wire [2:0] ALUControl;
 
 
 /***********        Wires for Registers and Multiplexers              ***********/
 wire [BUS-1:0]  PC_reg, Instr_reg, Data_reg, A_reg, B_reg, ACC_reg; //REGISTERS
-wire [BUS-1:0]  AdrSM_mux, WDRF_mux, SrcA_mux, SrcB_mux, PCin_mux;   //MULTIPLEXERS
+wire [BUS-1:0]  AdrSM_mux, WDRF_mux, SrcA_mux, SrcB_mux, PCin_mux, ALUR_mux;   //MULTIPLEXERS
 wire [4:0] A3RF_mux;
 
 assign PCen = PCWrite || (BranchEq && ALU_z) || (BranchNeq && ~ALU_z) ;
@@ -75,6 +75,7 @@ ALU_U2(
 
 SignExtend SigExt_U14(
     .Imm(Instr_reg[15:0]),
+    .SignZero(SignZero),
     .ExtImm(SignImm)
 );
 
@@ -95,7 +96,9 @@ UC_FSM UC_U15(
     .ALUSrcA(ALUSrcA),
     .PCSrc(PCSrc),
     .ALUSrcB(ALUSrcB),
-    .ALUControl(ALUControl)
+    .ALUControl(ALUControl),
+    .Jen(Jen),
+    .SignZero(SignZero)
 );
 
 /***********        Registers Instanciation       ***********/
@@ -181,9 +184,16 @@ Bselmux_U12(
 );
 
 MultiplexerUnit#(.SEL(1), .WORD(BUS))
-PCselmux_U13(
+ALUoutmux_U13(
     .DATAin({ACC_reg, ALUresult}),
     .Select(PCSrc),
+    .DATAout(ALUR_mux)
+);
+
+MultiplexerUnit#(.SEL(1), .WORD(BUS))
+PCselmux_U16(
+    .DATAin({{PC_reg[31:28], Instr_reg[25:0], 2'b00}, ALUR_mux}),
+    .Select(Jen),
     .DATAout(PCin_mux)
 );
 

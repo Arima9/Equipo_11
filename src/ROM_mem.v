@@ -9,7 +9,7 @@ module ROM_mem
 reg [WORD-1:0] rom [DEPTH-1:0];
 
 initial begin
-    $readmemh("../assembly_code/Test_Program_code.hex", rom);
+    $readmemh("../assembly_code/T7-1.hex", rom);
 end
 
 assign DATA_out = rom[ADDR];

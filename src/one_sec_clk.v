@@ -26,4 +26,4 @@ end
 
 assign CLKout = w1;
 
-endmodule 
+endmodule
