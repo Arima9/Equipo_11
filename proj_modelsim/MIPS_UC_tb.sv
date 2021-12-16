@@ -1,7 +1,7 @@
 `timescale 1ns/1ns
 module MIPS_UC_tb();
 logic CLK = 1'b0, RST = 1'b0;
-logic [7:0] GPIO_o_tb;
+logic [7:0] GPIO_o_tb, GPIO_i_tb;
 enum {UK,IF,ID,EX,MA,WB} UC_STATE;
 `include "Instr_Enum_PKG.svh"
 // enum logic {addi, add} INST;
@@ -10,7 +10,8 @@ enum {UK,IF,ID,EX,MA,WB} UC_STATE;
 MIPS_Multi_Cycle DUT(
     .clk(CLK),
     .reset(RST),
-    .GPIO_o(GPIO_o_tb)
+    .GPIO_o(GPIO_o_tb),
+    .GPIO_i(GPIO_i_tb)
     );
 
 //Clock signal generator
@@ -21,6 +22,9 @@ initial forever #5 CLK = ~CLK;
 initial //TB initial
 fork
     UC_STATE = UK;
+    GPIO_i_tb = 'hFF;
+    #1500 GPIO_i_tb = 'h0; 
+
    #6 RST = 1'b1;
     begin
         #3000;

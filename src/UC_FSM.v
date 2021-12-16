@@ -5,11 +5,11 @@ module UC_FSM
     input [5:0] Op,
     input [5:0] Funct,
     output  PCWrite, BranchEq, BranchNeq, IorD, MemWrite, IRWrite,
-    RegDst, MemtoReg, RegWrite, ALUSrcA, PCSrc, Jen, SignZero,
+    RegDst, MemtoReg, RegWrite, ALUSrcA, PCSrc, Jen, SignZero, IntorPeri,
     output [1:0] ALUSrcB,
     output [2:0] ALUControl
 );
-reg [17:0] Ctrl_signals;
+reg [18:0] Ctrl_signals;
 
 //States for the Instruction Cycle
 localparam [2:0] 
@@ -22,7 +22,7 @@ localparam [2:0]
 `include "opp_codes_pkg.vh"
 
 //Control signals concatenated to make easier the signal assigns
-assign {SignZero, Jen,    //MS nibble
+assign {IntorPeri,SignZero, Jen,    //MS nibble
         PCWrite, BranchEq, BranchNeq, IorD, //Nibble3
         MemWrite, IRWrite, RegDst, MemtoReg,    //Nibble 2
         RegWrite, ALUSrcA, ALUSrcB, //Nible 1
@@ -42,30 +42,30 @@ always @(*) begin
 
         IF:begin    //State for Intruction Fetch
             NEXT = ID;
-            Ctrl_signals = 18'h0_84_10;
+            Ctrl_signals = 'h0_84_10;
         end //End of Instruction fetch state
     
         ID:begin    //State for Instruction Decode
             case (Op)
                 'h0:begin
                     NEXT = EX;
-                    Ctrl_signals = 18'h0;
+                    Ctrl_signals = 'h0;
                 end 
                 _ori:begin
                     NEXT = EX;
-                    Ctrl_signals = 18'h2_00_64;
+                    Ctrl_signals = 'h2_00_64;
                 end
                 _beq:begin
                     NEXT = EX;
-                    Ctrl_signals = 18'h0_00_30;
+                    Ctrl_signals = 'h0_00_30;
                 end
                 _j:begin
                     NEXT = IF;
-                    Ctrl_signals = 18'h1_80_00;
+                    Ctrl_signals = 'h1_80_00;
                 end
                 default:begin
                     NEXT = EX;
-                    Ctrl_signals = 18'h0;
+                    Ctrl_signals = 'h0;
                 end  
             endcase
         end //End of Instruction Decode, Is it completely necessary?
@@ -75,7 +75,7 @@ always @(*) begin
                 'h0:begin //R type instruction
                     NEXT = WB;
                     case (Funct)
-                        _add : Ctrl_signals = 18'h0_02_40;
+                        _add : Ctrl_signals = 'h0_02_40;
                         // _addu:
                         // _and :
                         // _jr  :
@@ -87,20 +87,20 @@ always @(*) begin
                         // _srl :
                         // _sub :
                         // _subu:
-                        default: Ctrl_signals = 18'h0;
+                        default: Ctrl_signals = 'h0;
                     endcase
                 end
                 _addi:begin
                     NEXT = WB;
-                    Ctrl_signals = 18'h0_00_60;
+                    Ctrl_signals = 'h0_00_60;
                 end
                 _ori:begin
                     NEXT = WB;
-                    Ctrl_signals = 18'h2_00_64;
+                    Ctrl_signals = 'h2_00_64;
                 end
                 _beq:begin
                     NEXT = IF;
-                    Ctrl_signals = 18'h0_40_4F;
+                    Ctrl_signals = 'h0_40_4F;
                 end
                 // _andi:
                 
@@ -112,7 +112,7 @@ always @(*) begin
                 // _sw  :
                 default: begin
                     NEXT = IF;
-                    Ctrl_signals = 18'h0;
+                    Ctrl_signals = 'h0;
                 end
                 
             endcase
@@ -126,7 +126,7 @@ always @(*) begin
                 'h0:begin //R type instruction
                     NEXT = IF;
                     case (Funct)
-                        _add : Ctrl_signals = 18'h0_02_80;
+                        _add : Ctrl_signals = 'h0_02_80;
                         // _and :
                         // _jr  :
                         // _nor :
@@ -135,16 +135,16 @@ always @(*) begin
                         // _sll :
                         // _srl :
                         // _sub :
-                        default: Ctrl_signals = 18'h0;
+                        default: Ctrl_signals = 'h0;
                     endcase
                 end
                 _addi:begin
                     NEXT = IF;
-                    Ctrl_signals = 18'h0_00_80;
+                    Ctrl_signals = 'h0_00_80;
                 end
                 _ori :begin
                     NEXT = IF;
-                    Ctrl_signals = 18'h0_00_80;
+                    Ctrl_signals = 'h4_00_80;
                 end
                 // _andi:
                 // _ll  :
@@ -155,7 +155,7 @@ always @(*) begin
                 // _sw  :
                 default: begin
                     NEXT = IF;
-                    Ctrl_signals = 18'h0;
+                    Ctrl_signals = 'h0;
                 end
                 
             endcase
