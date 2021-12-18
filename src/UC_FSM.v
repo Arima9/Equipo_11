@@ -5,11 +5,12 @@ module UC_FSM
     input [5:0] Op,
     input [5:0] Funct,
     output  PCWrite, BranchEq, BranchNeq, IorD, MemWrite, IRWrite,
-    RegDst, MemtoReg, RegWrite, ALUSrcA, PCSrc, Jen, SignZero, IntorPeri,
+    output  RegDst, MemtoReg, RegWrite, ALUSrcA, PCSrc, Jen, Jal,
+    output  SignZero, IntorPeri,
     output [1:0] ALUSrcB,
     output [2:0] ALUControl
 );
-reg [18:0] Ctrl_signals;
+reg [19:0] Ctrl_signals;
 
 //States for the Instruction Cycle
 localparam [2:0] 
@@ -22,11 +23,11 @@ localparam [2:0]
 `include "opp_codes_pkg.vh"
 
 //Control signals concatenated to make easier the signal assigns
-assign {IntorPeri,SignZero, Jen,    //MS nibble
-        PCWrite, BranchEq, BranchNeq, IorD, //Nibble3
+assign {Jal, IntorPeri, SignZero, Jen,          //MS nibble
+        PCWrite, BranchEq, BranchNeq, IorD,     //Nibble3
         MemWrite, IRWrite, RegDst, MemtoReg,    //Nibble 2
-        RegWrite, ALUSrcA, ALUSrcB, //Nible 1
-        ALUControl, PCSrc   //lS nibble
+        RegWrite, ALUSrcA, ALUSrcB,             //Nible 1
+        ALUControl, PCSrc                       //lS nibble
         } = Ctrl_signals;
 
 //Secuential block - FSM
@@ -50,7 +51,15 @@ always @(*) begin
                 'h0:begin
                     NEXT = EX;
                     Ctrl_signals = 'h0;
-                end 
+                end
+                _addi:begin
+                    NEXT = EX;
+                    Ctrl_signals = 'h0_00_60;
+                end
+                _addiu:begin
+                    NEXT = EX;
+                    Ctrl_signals = 'h0_00_60;
+                end
                 _ori:begin
                     NEXT = EX;
                     Ctrl_signals = 'h2_00_64;
@@ -62,6 +71,10 @@ always @(*) begin
                 _j:begin
                     NEXT = IF;
                     Ctrl_signals = 'h1_80_00;
+                end
+                _jal:begin
+                    NEXT = IF;
+                    Ctrl_signals = 'h9_80_80;
                 end
                 default:begin
                     NEXT = EX;
@@ -91,6 +104,10 @@ always @(*) begin
                     endcase
                 end
                 _addi:begin
+                    NEXT = WB;
+                    Ctrl_signals = 'h0_00_60;
+                end
+                _addiu:begin
                     NEXT = WB;
                     Ctrl_signals = 'h0_00_60;
                 end
@@ -139,6 +156,10 @@ always @(*) begin
                     endcase
                 end
                 _addi:begin
+                    NEXT = IF;
+                    Ctrl_signals = 'h0_00_80;
+                end
+                _addiu:begin
                     NEXT = IF;
                     Ctrl_signals = 'h0_00_80;
                 end

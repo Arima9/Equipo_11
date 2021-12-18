@@ -26,7 +26,7 @@ wire    [BUS-1:0]  SignImm; //SignExtender wire
 
 /***********        Wires declaration for the control signals     ***********/
 wire IorD, MemWrite, IRWrite, PCWrite;
-wire BranchEq, PCSrc, ALUSrcA, RegWrite;
+wire BranchEq, PCSrc, ALUSrcA, RegWrite, Jal;
 wire MemtoReg, RegDst, BranchNeq, Jen, SignZero, IntorPeri;
 wire [1:0] ALUSrcB;
 wire [2:0] ALUControl;
@@ -35,7 +35,7 @@ wire [2:0] ALUControl;
 /***********        Wires for Registers and Multiplexers              ***********/
 wire [BUS-1:0]  PC_reg, Instr_reg, Data_reg, A_reg, B_reg, ACC_reg; //REGISTERS
 wire [BUS-1:0]  AdrSM_mux, WDRF_mux, SrcA_mux, SrcB_mux, PCin_mux, ALUR_mux, Peri_mux;   //MULTIPLEXERS
-wire [4:0] A3RF_mux;
+wire [4:0] A3RF_mux, IorR_mux;
 
 assign PCen = PCWrite || (BranchEq && ALU_z) || (BranchNeq && ~ALU_z) ;
 assign GPIO_o = ALUresult[7:0];
@@ -161,6 +161,13 @@ MultiplexerUnit#(.SEL(1), .WORD(5))
 WRRFmux_U9(
     .DATAin({Instr_reg[15:11], Instr_reg[20:16]}),
     .Select(RegDst),
+    .DATAout(IorR_mux)
+);
+
+MultiplexerUnit#(.SEL(1), .WORD(5))
+WRRFmux_U18(
+    .DATAin({5'd31, IorR_mux}),
+    .Select(Jal),
     .DATAout(A3RF_mux)
 );
 
