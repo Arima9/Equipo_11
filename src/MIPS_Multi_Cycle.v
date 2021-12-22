@@ -29,8 +29,7 @@ wire IorD, MemWrite, IRWrite, PCWrite;
 wire BranchEq, PCSrc, ALUSrcA, RegWrite, Jal;
 wire MemtoReg, RegDst, BranchNeq, Jen, SignZero, IntorPeri;
 wire [1:0] ALUSrcB;
-wire [2:0] ALUControl;
-
+wire [3:0] ALUControl;
 
 /***********        Wires for Registers and Multiplexers              ***********/
 wire [BUS-1:0]  PC_reg, Instr_reg, Data_reg, A_reg, B_reg, ACC_reg; //REGISTERS
@@ -39,8 +38,6 @@ wire [4:0] A3RF_mux, IorR_mux;
 
 assign PCen = PCWrite || (BranchEq && ALU_z) || (BranchNeq && ~ALU_z) ;
 assign GPIO_o = ALUresult[7:0];
-
-
 
 /***********        Modules Instanciation         ***********/
 Memory_System #(.MEMORY_DEPTH(64), .DATA_WIDTH(BUS)) 
@@ -100,7 +97,8 @@ UC_FSM UC_U15(
     .ALUControl(ALUControl),
     .Jen(Jen),
     .SignZero(SignZero),
-    .IntorPeri(IntorPeri)
+    .IntorPeri(IntorPeri),
+    .Jal(Jal)
 );
 
 /***********        Registers Instanciation       ***********/

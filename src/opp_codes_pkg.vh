@@ -11,7 +11,7 @@ localparam [5:0]
     _sltu   = 'h2b,
     _sll    = 'h0,
     _srl    = 'h2,
-    _sub    = 'h23,
+    _sub    = 'h22,
     _subu   = 'h23,
 
     //I type instructions
@@ -35,5 +35,7 @@ localparam [5:0]
 
     //J type instructions
     _j      = 'h2,
-    _jal    = 'h3;
-    
+    _jal    = 'h3,
+
+    //Special Instructions
+    _mul    = 'h1C; //Treatened like a R type

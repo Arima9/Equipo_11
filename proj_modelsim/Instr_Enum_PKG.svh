@@ -1,6 +1,6 @@
 //Header file where we define a enum type for the instructions, ti identify better the
 //executing instruction in the waveform of the modelsim.
-enum{
+enum {
     _add  ,
     _addu ,
     _and  ,
@@ -31,5 +31,7 @@ enum{
     _sh   ,
     _sw   ,
     _j    ,
-    _jal
+    _jal  ,
+    _mul  ,
+    _nop
 } INSTR;
