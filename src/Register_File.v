@@ -32,9 +32,9 @@ generate
         //The register zero will store always a Zero value.
         if (i == 0)
             RegisterUnit #(.W(N)) R(.clk(clk), .rst(reset), .en(Reg_Write_i & DecEnables[i]), .D({N{1'b0}}), .Q(Words[(N-1+N*i):(0+N*i)]));
-        //
+        //The pc register will be initialized to the last location of the RAM memory
         else if (i == 29)
-            RegisterUnit #(.W(N), .RstValue('h7fffeffc)) R(.clk(clk), .rst(reset), .en(Reg_Write_i & DecEnables[i]), .D(Write_Data_i), .Q(Words[(N-1+N*i):(0+N*i)]));
+            RegisterUnit #(.W(N), .RstValue(32'h1001_0000 + ('d63 << 2))) R(.clk(clk), .rst(reset), .en(Reg_Write_i & DecEnables[i]), .D(Write_Data_i), .Q(Words[(N-1+N*i):(0+N*i)]));
         //The rest of the registers will be propperly conected.
         else
             RegisterUnit #(.W(N)) R(.clk(clk), .rst(reset), .en(Reg_Write_i & DecEnables[i]), .D(Write_Data_i), .Q(Words[(N-1+N*i):(0+N*i)]));
