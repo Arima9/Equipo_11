@@ -4,7 +4,8 @@ module MIPS_Multi_Cycle
     input clk,
     input reset,
     //Outputs
-    output [7:0] GPIO_o
+    input   [7:0] GPIO_i,
+    output  [7:0] GPIO_o
 
     /******** Señales de Control ***********/
     // input IorD, MemWrite, IRWrite, PCWrite,
@@ -26,14 +27,14 @@ wire    [BUS-1:0]  SignImm; //SignExtender wire
 /***********        Wires declaration for the control signals     ***********/
 wire IorD, MemWrite, IRWrite, PCWrite;
 wire BranchEq, PCSrc, ALUSrcA, RegWrite;
-wire MemtoReg, RegDst, BranchNeq;
+wire MemtoReg, RegDst, BranchNeq, Jen, SignZero, IntorPeri;
 wire [1:0] ALUSrcB;
 wire [2:0] ALUControl;
 
 
 /***********        Wires for Registers and Multiplexers              ***********/
 wire [BUS-1:0]  PC_reg, Instr_reg, Data_reg, A_reg, B_reg, ACC_reg; //REGISTERS
-wire [BUS-1:0]  AdrSM_mux, WDRF_mux, SrcA_mux, SrcB_mux, PCin_mux;   //MULTIPLEXERS
+wire [BUS-1:0]  AdrSM_mux, WDRF_mux, SrcA_mux, SrcB_mux, PCin_mux, ALUR_mux, Peri_mux;   //MULTIPLEXERS
 wire [4:0] A3RF_mux;
 
 assign PCen = PCWrite || (BranchEq && ALU_z) || (BranchNeq && ~ALU_z) ;
@@ -59,7 +60,7 @@ RF_U1(
     .Write_Register_i(A3RF_mux),
     .Read_Register_1_i(Instr_reg[25:21]),
     .Read_Register_2_i(Instr_reg[20:16]),
-    .Write_Data_i(WDRF_mux),
+    .Write_Data_i(Peri_mux),
     .Read_Data_1_o(RF_RD1),
     .Read_Data_2_o(RF_RD2)
 );
@@ -75,6 +76,7 @@ ALU_U2(
 
 SignExtend SigExt_U14(
     .Imm(Instr_reg[15:0]),
+    .SignZero(SignZero),
     .ExtImm(SignImm)
 );
 
@@ -95,7 +97,10 @@ UC_FSM UC_U15(
     .ALUSrcA(ALUSrcA),
     .PCSrc(PCSrc),
     .ALUSrcB(ALUSrcB),
-    .ALUControl(ALUControl)
+    .ALUControl(ALUControl),
+    .Jen(Jen),
+    .SignZero(SignZero),
+    .IntorPeri(IntorPeri)
 );
 
 /***********        Registers Instanciation       ***********/
@@ -181,10 +186,24 @@ Bselmux_U12(
 );
 
 MultiplexerUnit#(.SEL(1), .WORD(BUS))
-PCselmux_U13(
+ALUoutmux_U13(
     .DATAin({ACC_reg, ALUresult}),
     .Select(PCSrc),
+    .DATAout(ALUR_mux)
+);
+
+MultiplexerUnit#(.SEL(1), .WORD(BUS))
+PCselmux_U16(
+    .DATAin({{PC_reg[31:28], Instr_reg[25:0], 2'b00}, ALUR_mux}),
+    .Select(Jen),
     .DATAout(PCin_mux)
+);
+
+MultiplexerUnit#(.SEL(1), .WORD(BUS))
+Periphmux_U17(
+    .DATAin({{24'h0 , GPIO_i} , WDRF_mux}),
+    .Select(IntorPeri),
+    .DATAout(Peri_mux)
 );
 
 endmodule
