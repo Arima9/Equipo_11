@@ -5,7 +5,8 @@ module MIPS_Multi_Cycle
     input reset,
     //Outputs
     input   [7:0] GPIO_i,
-    output  [7:0] GPIO_o
+    output  [7:0] GPIO_o,
+    output  [23:0] GPIO_o_hex
 
     /******** Señales de Control ***********/
     // input IorD, MemWrite, IRWrite, PCWrite,
@@ -44,9 +45,12 @@ Memory_System #(.MEMORY_DEPTH(64), .DATA_WIDTH(BUS))
 IDM_U0(
     .Write_Enable_i(MemWrite),
     .CLK(clk),
+    .RST(reset),
     .Write_Data(B_reg),
     .Address_i(AdrSM_mux),
-    .Read_Data(MS_Rdat)
+    .Read_Data(MS_Rdat),
+    .OutPort1(GPIO_o_hex),
+    .InPort1({24'b0, GPIO_i})
 );
 
 Register_File #(.N(BUS), .ADDR(5))

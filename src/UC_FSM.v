@@ -82,6 +82,10 @@ always @(*) begin
                     NEXT = IF;
                     Ctrl_signals = 'h13_01_00;
                 end
+                _lui:begin
+                    NEXT = EX;
+                    Ctrl_signals = 'h00_00_C9;
+                end
                 _lw:begin
                     NEXT = EX;
                     Ctrl_signals = 'h00_22_C0;
@@ -146,6 +150,10 @@ always @(*) begin
                     NEXT = IF;
                     Ctrl_signals = 'h00_80_97;
                 end
+                _lui:begin
+                    NEXT = WB;
+                    Ctrl_signals = 'h00_00_C9;
+                end
                 _lw:begin
                     NEXT = MA;
                     Ctrl_signals = 'h00_22_C0;
@@ -163,7 +171,7 @@ always @(*) begin
                 // _ll  :
                 // _lui :
                 default: begin
-                    NEXT = IF;
+                    NEXT = WB;
                     Ctrl_signals = 'h0;
                 end
             endcase
@@ -211,6 +219,10 @@ always @(*) begin
                     Ctrl_signals = 'h08_01_00;
                 end
                 _slti:begin
+                    NEXT = IF;
+                    Ctrl_signals = 'h00_01_00;
+                end
+                _lui:begin
                     NEXT = IF;
                     Ctrl_signals = 'h00_01_00;
                 end

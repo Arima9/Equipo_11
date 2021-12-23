@@ -4,6 +4,7 @@ add wave -noupdate /MIPS_UC_tb/CLK
 add wave -noupdate /MIPS_UC_tb/RST
 add wave -noupdate /MIPS_UC_tb/INSTR
 add wave -noupdate /MIPS_UC_tb/UC_STATE
+add wave -noupdate -radix hexadecimal /MIPS_UC_tb/DUT/GPIO_o_hex
 add wave -noupdate -radix hexadecimal /MIPS_UC_tb/GPIO_o_tb
 add wave -noupdate -radix hexadecimal /MIPS_UC_tb/GPIO_i_tb
 add wave -noupdate -radix hexadecimal /MIPS_UC_tb/DUT/MS_Rdat
@@ -58,4 +59,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {1512 ns} {1606 ns}
+WaveRestoreZoom {1422 ns} {1516 ns}

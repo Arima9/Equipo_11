@@ -73,10 +73,11 @@ fork
             'h2:    INSTR = _j;
             'h3:    INSTR = _jal;
             'h1C:   INSTR = _mul;
+            'hf:    INSTR = _lui;
             // _andi:
             // _bne :
             // _ll  :
-            // _lui :
+
             // _lw  :
             // _slti:
             // _sw  :
