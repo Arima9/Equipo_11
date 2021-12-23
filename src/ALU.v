@@ -25,6 +25,7 @@ always @(*) begin
 		4'b0110:	ALUres = A_in >> shampt;
 		4'b0111:	ALUres = A_in - B_in;
 		4'b1000:	ALUres = A_in * B_in;
+		4'b1001:	ALUres = {B_in[15:0], 16'b0};
 		default: 	ALUres = A_in + B_in;
 	endcase
 end

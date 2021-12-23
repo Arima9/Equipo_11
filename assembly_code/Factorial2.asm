@@ -3,7 +3,7 @@
 
 .text
 Main:
-	li $a0, 3 # Loading constant				DONE
+	lw $a0, 0x3FFFBC #				DONE
 	jal Factorial # Calling procedure			DONE
 	sw $v0, 0x3FFFC0
 	j Exit	# Jump to Main label				DONE

@@ -6,8 +6,9 @@ module one_sec_clk
 	output CLKout
 );
 					
-localparam CUENTA= 	50000000;	// Valor para implementar en tarjeta
-//localparam CUENTA= 2;	// Valor para simular el Waveform
+localparam CUENTA= 	50_000_000;	// Valor para implementar en tarjeta
+//localparam CUENTA= 	50;
+
 integer conteo;
 reg w1 = 1'b0; 
 
